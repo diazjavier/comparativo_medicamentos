@@ -22,12 +22,11 @@ export default function Comerciales() {
 
 
   const fetchComerciales = async () => {
-    console.log("Entró a fetchComerciales")
+
     const res = await fetch(
       `http://localhost:3000/api/comerciales/${genState}`
     );
     const comecs = await res.json();
-    console.log(comecs)
     setMeds({ data: { nnes: comecs } });
 
     const res2 = await fetch(`http://localhost:3000/api/genericos/${genState}`);

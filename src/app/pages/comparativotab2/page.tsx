@@ -11,10 +11,14 @@ import { Autocomplete, TextField, Tooltip } from "@mui/material";
 import * as math from "mathjs";
 
 import TableBasic2 from "@/components/TableBasic2";
+import SimpleSectionCenter from "@/components/SimpleSectionCenter";
+
 import {
   ChartCombinado2,
   getChartOptions2,
+  getChartOptions3
 } from "@/components/ChartCombinado2";
+
 import {
   Medicamento,
   MedicamentosData,
@@ -26,8 +30,10 @@ import {
   MedicamentoComparativoComercialData,
   DatosDelComercial,
 } from "@/interfaces/medicamentos";
+
 import { TabPanelProps } from "@/interfaces/tabs";
-import { number } from "echarts";
+
+import { comparadorDePrecios } from "@/components/data";
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -61,37 +67,45 @@ export default function ComercialesTab() {
   const [meds2, setMeds2] = useState<MedicamentosComparativoData>({
     data: { meds: [] },
   });
+  const [meds3, setMeds3] = useState<MedicamentosComparativoData>({
+    data: { meds: [] },
+  });
   const [coms2, setComs2] = useState<MedicamentoComparativoComercialData>({
     data: { coms: [] },
   });
-  // const [genericos, setGenericos] = useState<Generico[]>([]);
+
   const [options, setOptions] = useState<string[]>([]);
   const [options2, setOptions2] = useState<string[]>([]);
   const [options3, setOptions3] = useState<string[]>([]);
   const [options4, setOptions4] = useState<MedicamentoComparativoComercial[]>(
     []
   );
-  const [lasChartOptions, setLasChartOptions] = useState({});
+  const [options5, setOptions5] = useState<string[]>([]);
+  
+  const [lasChartOptions2, setLasChartOptions2] = useState({});
+  const [lasChartOptions3, setLasChartOptions3] = useState({});
   const [value2, setValue2] = useState("");
   const [value3, setValue3] = useState("");
   const [value4, setValue4] = useState<MedicamentoComparativoComercial>({
     codigo: "",
     nombre: "",
   });
+  const [value5, setValue5] = useState("");
+
   const [cv, setCv] = useState(0);
   const [prom, setProm] = useState(0);
   const [mediana, setMediana] = useState(0);
   const [cuartilo1, setCuartilo1] = useState(0);
   const [cuartilo3, setCuartilo3] = useState(0);
   const [tabValue, setTabValue] = useState(0);
-  // const [comState, setComState] = useState<MedicamentoComparativoComercial>({codigo:'', nombre: ''});
   const [datosDelCom, setDatosDelCom] = useState<DatosDelComercial[]>([
-    { droga: "", dosis: 0, ff: "" },
+    { droga: "", dosis: "", ff: "", unidades: ""},
   ]);
   const [datosQuery, setDatosQuery] = useState<DatosDelComercial>({
     droga: "",
-    dosis: 0,
+    dosis: "",
     ff: "",
+    unidades: "",
   });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -126,22 +140,6 @@ export default function ComercialesTab() {
     const cuartilos: any = math.quantileSeq(ppus, [0.25, 0.75]);
     const stdDeviation2: math.MathNumericType[] = math.std(ppus);
 
-    // console.log(
-    //   "promedio: ",
-    //   promedio,
-    //   "Varianza: ",
-    //   varianza,
-    //   "DesvEstandar: ",
-    //   stdDeviation,
-    //   "Mediana: ",
-    //   median,
-    //   "stDeviation2: ",
-    //   stdDeviation2,
-    //   "1° Cuartilo: ",
-    //   cuartilos[0],
-    //   "3° Cuartilo: ",
-    //   cuartilos[1]
-    // );
     setCv(coefVariacion);
     setProm(promedio);
     setMediana(median);
@@ -149,28 +147,33 @@ export default function ComercialesTab() {
     setCuartilo3(cuartilos[1]);
   };
 
-  // const reconfiguroDatosDelCom = (datos: DatosDelComercial[]) => {
-  //   setDroState(datos[0].droga);
-  //   setValue2(datos[0].dosis.toString());
-  //   setValue3("dummy");
-  //   setValue3(datos[0].ff);
-
-  //   //fetchComerciales();
-  // };
-
-  const fetchComerciales = async () => {
+  const fetchComparativoComerciales = async () => {
     const request = new Request(
       `http://localhost:3000/api/comparativo_comerciales`,
       {
         method: "PUT",
         body: JSON.stringify(datosQuery),
-        // body: JSON.stringify({ droState, value2, value3 }),
+      }
+    );
+    const res = await fetch(request);
+    const comecs = await res.json();
+    setMeds3({ data: { meds: comecs } });
+  };
+
+  const fetchComparativoUnidades = async () => {
+    const request = new Request(
+      `http://localhost:3000/api/comparativo_unidades`,
+      {
+        method: "PUT",
+        body: JSON.stringify(datosQuery),
       }
     );
     const res = await fetch(request);
     const comecs = await res.json();
     setMeds2({ data: { meds: comecs } });
+
   };
+
 
   const fetchComercialesTodos = async () => {
     const res4 = await fetch(
@@ -178,12 +181,8 @@ export default function ComercialesTab() {
     );
     const comercs = await res4.json();
 
-    // const comsArray: MedicamentoComparativoComercial[] = comercs.map((com: { codigo: string, nombre: string }) => {
-    //   return '{codigo: com.codigo, nombre: com.nombre}';
-    // });
     setComs2({ data: { coms: comercs } });
 
-    // setOptions4(comsArray);
   };
 
   const fetchDatosDelComercial = async () => {
@@ -197,17 +196,22 @@ export default function ComercialesTab() {
     const res = await fetch(request);
     const comecs = await res.json();
 
-    // setComs2({ data: { coms: comecs } });
     setDatosDelCom(comecs);
+  };
+  
+  const fetchDosis = async () => {
+    const res = await fetch(
+      `http://localhost:3000/api/comparativo_dosis/${droState}`
+    );
+    const comecs = await res.json();
+    const comecsArray: string[] = comecs.map((com: { dosis: string }) => {
+      return com.dosis;
+    });
+    setOptions2(comecsArray);
+
   };
 
   const fetchFormasFarmaceuticas = async () => {
-    console.log(
-      "Entró a fetchFormasFarmacéuticas con Droga: ",
-      droState,
-      " Dosis: ",
-      value2
-    );
     const request = new Request(
       `http://localhost:3000/api/comparativo_formas_farmaceuticas`,
       {
@@ -225,29 +229,33 @@ export default function ComercialesTab() {
     setOptions3(lasFfs);
   };
 
-  const fetchDosis = async () => {
-    const res = await fetch(
-      `http://localhost:3000/api/comparativo_dosis/${droState}`
+  const fetchUnidades = async () => {
+    const request = new Request(
+      `http://localhost:3000/api/unidades`,
+      {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ droState, value2, value3 }),
+      }
     );
-    const comecs = await res.json();
-    const comecsArray: string[] = comecs.map((com: { dosis: string }) => {
-      return com.dosis;
-    });
-    setOptions2(comecsArray);
+    const res = await fetch(request);
 
-    // const res2 = await fetch(`http://localhost:3000/api/genericos/${genState}`);
-    // const gen = await res2.json();
-    // setGenerico(gen);
-  };
+    const units = await res.json();
+
+    const lasUnidades: string[] = units.map((com: { unidades: string }) => {
+      return com.unidades;
+    });
+    setOptions5(lasUnidades);
+  };  
 
   const fetchGenericos = async () => {
     const res3 = await fetch(`http://localhost:3000/api/comparativo_genericos`);
     const gens = await res3.json();
+
     const gensArray: string[] = gens.map((gen: { droga_combo: string }) => {
       return gen.droga_combo;
     });
-    // const gensUnsorted = await res3.json();
-    // const gens = gensUnsorted.sort(function(a: any, b: any){return a.label - b.label});
+
     setOptions(gensArray);
   };
 
@@ -259,7 +267,10 @@ export default function ComercialesTab() {
         codigo: "",
         nombre: "",
       });
+      setValue5("");
       setDroState(valor);
+    } else {
+      //Tendría que limpiar todo...
     }
   };
 
@@ -267,21 +278,30 @@ export default function ComercialesTab() {
     if (valor !== null && valor !== undefined && valor !== "") {
       setValue2(valor);
       setValue3("");
+      setValue5("");
+
     }
   };
 
   const handleChange3 = async (evento: any, valor: any) => {
     if (valor !== null && valor !== undefined && valor !== "") {
       setValue3(valor);
+      setValue5("");
     }
   };
 
   const handleChange4 = async (evento: any, valor: any) => {
     if (valor !== null && valor !== undefined && valor !== "") {
       setValue4(valor);
-      // setComState(valor);
     }
   };
+
+  const handleChange5 = async (evento: any, valor: any) => {
+    if (valor !== null && valor !== undefined && valor !== "") {
+      setValue5(valor);
+    }
+  };
+
 
   useEffect(() => {
     fetchGenericos();
@@ -291,52 +311,99 @@ export default function ComercialesTab() {
   useEffect(() => {
     if (droState !== null && droState !== undefined && droState !== "") {
       fetchDosis();
-    } else {
-      setOptions2([]);
     }
   }, [droState]);
 
   useEffect(() => {
-    setOptions2([]);
-    setOptions3([]);
-    setValue3("");
-    if (value2 !== null && value2 !== undefined && value2 !== "") {
+    if (
+      droState !== null &&
+      droState !== undefined &&
+      droState !== "" &&
+      value2 !== null &&
+      value2 !== undefined &&
+      value2 !== ""
+    ) {
       fetchFormasFarmaceuticas();
     }
-    // else
-    // {
-    //   setOptions2([]);
-    //   setOptions3([]);
-    //   setValue3("");
-    // }
+
   }, [value2]);
 
   useEffect(() => {
 
-    if (value3 !== null && value3 !== undefined && value3 !== "") {
-      // fetchComerciales();
-      const data: DatosDelComercial = {
-        droga: droState,
-        dosis: parseFloat(value2),
-        ff: value3,
-      };
-      setDatosQuery(data);
+    if (
+      droState !== null &&
+      droState !== undefined &&
+      droState !== "" &&
+      value2 !== null &&
+      value2 !== undefined &&
+      value2 !== "" &&
+      value3 !== null &&
+      value3 !== undefined &&
+      value3 !== ""
+    ) {
+      fetchUnidades();
     }
+
   }, [value3]);
 
   useEffect(() => {
+    if (
+      droState !== null &&
+      droState !== undefined &&
+      droState !== "" &&
+      value2 !== null &&
+      value2 !== undefined &&
+      value2 !== "" &&
+      value3 !== null &&
+      value3 !== undefined &&
+      value3 !== "" &&
+      value5 !== null &&
+      value5 !== undefined &&
+      value5 !== ""
+ 
+    ) {
+      const data: DatosDelComercial = {
+        droga: droState,
+        dosis: value2,
+        ff: value3,
+        unidades: value5,
+      };
+      setDatosQuery(data);
+    }
+  }, [value5]);
+
+  useEffect(() => {
     if (value4 !== null && value4 !== undefined && value4.codigo !== "") {
-      fetchDatosDelComercial();
+      
+      fetchDatosDelComercial();      
+      const data: DatosDelComercial = datosDelCom[0];
+      setDatosQuery(data);
+
+
+
     }
   }, [value4]);
 
   useEffect(() => {
     if (meds2.data.meds.length) {
       calculoCv();
+
       const opts: {} = getChartOptions2(meds2, value4.nombre);
-      setLasChartOptions(opts);
+      setLasChartOptions2(opts);
+  
     }
   }, [meds2]);
+
+  useEffect(() => {
+    if (meds3.data.meds.length) {
+
+      const opts: {} = getChartOptions3(meds3, value4.nombre);
+      setLasChartOptions3(opts);
+  
+    }
+  }, [meds3]);
+
+
 
   //Esto es para seleccionar la opción en el combo de dosis cuando hay un solo valor
   useEffect(() => {
@@ -352,6 +419,12 @@ export default function ComercialesTab() {
     }
   }, [options3]);
 
+  useEffect(() =>{
+    if(options5.length === 1) {
+      setValue5(options5[0]);
+    }
+  }, [options5])
+
   useEffect(() => {
     setOptions4(coms2.data.coms);
   }, [coms2]);
@@ -363,15 +436,19 @@ export default function ComercialesTab() {
       datosDelCom[0].droga !== "" &&
       datosDelCom[0].dosis !== null &&
       datosDelCom[0].dosis !== undefined &&
-      datosDelCom[0].dosis !== 0 &&
+      datosDelCom[0].dosis !== "" &&
       datosDelCom[0].ff !== null &&
       datosDelCom[0].ff !== undefined &&
-      datosDelCom[0].ff !== ""
+      datosDelCom[0].ff !== "" &&
+      datosDelCom[0].unidades !== null &&
+      datosDelCom[0].unidades !== undefined &&
+      datosDelCom[0].unidades !== "" 
     ) {
       setDatosQuery(datosDelCom[0]);
       setDroState(datosDelCom[0].droga);
-      setValue2(datosDelCom[0].dosis.toString());
+      setValue2(datosDelCom[0].dosis);
       setValue3(datosDelCom[0].ff);
+      setValue5(datosDelCom[0].unidades)
     }
   }, [datosDelCom]);
 
@@ -382,221 +459,221 @@ export default function ComercialesTab() {
       datosQuery.droga !== "" &&
       datosQuery.dosis !== null &&
       datosQuery.dosis !== undefined &&
-      datosQuery.dosis !== 0 &&
+      datosQuery.dosis !== "" &&
       datosQuery.ff !== null &&
       datosQuery.ff !== undefined &&
-      datosQuery.ff !== ""
+      datosQuery.ff !== "" &&
+      datosQuery.unidades !== null &&
+      datosQuery.unidades !== undefined &&
+      datosQuery.unidades !== ""
     ) {
-      console.log("El valor value3: ", value3)
-      fetchComerciales();
+      fetchComparativoComerciales();
+      fetchComparativoUnidades();
     }
   }, [datosQuery]);
 
   return (
     <div>
-      <div className="flex bg-yellow-200 h-24 items-center justify-center m-2">
-        <p className="text-center text-2xl">
-          Precios de medicamentos comerciales en Argentina
-        </p>
-      </div>
 
-      <div className="flex wrap flex-col justify-around sm:flex-row">
-        <div className="flex-grow-2">
-          {/* <Box
-            sx={{
-              flexGrow: 1,
-              bgcolor: "background.paper",
-              display: "flex",
-              height: 40,
-              margin: "20px",
-            }}
-          > */}
+      <SimpleSectionCenter data={comparadorDePrecios} />
+
+      <div className="flex wrap flex-col justify-center sm:justify-around sm:flex-row">
+        <div className="flex-grow-2 w-full sm:w-1/2">
           <Box sx={{ width: "100%" }}>
-            <Tabs
-              // orientation="vertical"
-              // variant="scrollable"
+            <Tabs              
               value={tabValue}
               onChange={handleTabChange}
               aria-label="Formas de búsqueda"
               sx={{
-                //borderRight: 1,
                 borderBottom: 1,
                 borderColor: "divider",
               }}
               centered
+              indicatorColor="secondary"
+              textColor="inherit"
             >
-              <Tab label="Por droga" {...a11yProps(0)} />
-              <Tab label="Por comercial" {...a11yProps(1)} />
-              {/* <Tab label="Item Three" {...a11yProps(2)} />
-              <Tab label="Item Four" {...a11yProps(3)} />
-              <Tab label="Item Five" {...a11yProps(4)} />
-              <Tab label="Item Six" {...a11yProps(5)} />
-              <Tab label="Item Seven" {...a11yProps(6)} /> */}
+              <Tab className="text-lg font-bold" label="Por droga" {...a11yProps(0)} />
+              <Tab className="text-lg font-bold" label="Por comercial" {...a11yProps(1)} />
+
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              <div className="w-72">
-                <div className="m-4 p-2 ">
-                  <Autocomplete
-                    id="drogas"
-                    sx={{ width: 300 }}
-                    value={droState}
-                    options={options}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Genérico" />
-                    )}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="m-4 p-2 ">
-                  <Autocomplete
-                    id="dosis"
-                    sx={{ width: 300 }}
-                    value={value2}
-                    options={options2}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Dosis" />
-                    )}
-                    onChange={handleChange2}
-                  />
-                </div>
-                <div className="m-4 p-2 ">
-                  <Autocomplete
-                    id="formafarmaceutica"
-                    sx={{ width: 300 }}
-                    value={value3}
-                    options={options3}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Forma Farmacéutica" />
-                    )}
-                    onChange={handleChange3}
-                  />
-                </div>
+              <div className="m-4 p-2 ">
+                <Autocomplete
+                  id="drogas"
+                  sx={{
+                    width: "100%",
+                  }}
+                  value={droState}
+                  options={options}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Genérico" />
+                  )}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="m-4 p-2 ">
+                <Autocomplete
+                  id="dosis"
+                  sx={{ width: "100%" }}
+                  value={value2}
+                  options={options2}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Dosis" />
+                  )}
+                  onChange={handleChange2}
+                />
+              </div>
+              <div className="m-4 p-2 ">
+                <Autocomplete
+                  id="formafarmaceutica"
+                  sx={{ width: "100%" }}
+                  value={value3}
+                  options={options3}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Forma Farmacéutica" />
+                  )}
+                  onChange={handleChange3}
+                />
+              </div>
+              <div className="m-4 p-2 ">
+                <Autocomplete
+                  id="unidades"
+                  sx={{ width: "100%" }}
+                  value={value5}
+                  options={options5}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Cantidad de unidades" />
+                  )}
+                  onChange={handleChange5}
+                />
               </div>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <div className="w-72">
-                <div className="mx-4 my-2 p-2 ">
-                  <Autocomplete
-                    id="comercial"
-                    sx={{ width: 300 }}
-                    value={value4}
-                    options={options4}
-                    getOptionLabel={(option) => option.nombre}
-                    getOptionKey={(option) => option.codigo}
-                    renderInput={(params) => (
-                      <TextField {...params} label="comercial" />
-                    )}
-                    onChange={handleChange4}
-                  />
-                </div>
-                <br />
-                <div className="ml-4 ">
-                  <table>
-                    <tbody className="ml-2">
-                      <tr className="h-12">
-                        <th className="text-left pl-2">Droga:</th>
-                        <td className="w-24 text-center">{droState}</td>
-                      </tr>
-                      <tr className="h-12">
-                        <th className="text-left pl-2">Dosis:</th>
-                        <td className="w-24 text-center">{value2}</td>
-                      </tr>
-                      <tr className="h-12">
-                        <th className="text-left pl-2">Forma farmacéutica:</th>
-                        <td className="w-24 text-center">{value3}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <div className="mx-4 my-2 p-2 ">
+                <Autocomplete
+                  id="comercial"
+                  sx={{ width: "100%" }}
+                  value={value4}
+                  options={options4}
+                  getOptionLabel={(option) => option.nombre}
+                  getOptionKey={(option) => option.codigo}
+                  renderInput={(params) => (
+                    <TextField {...params} label="comercial" />
+                  )}
+                  onChange={handleChange4}
+                />
+              </div>
+              <br />
+              <div className="ml-4 ">
+                <table className="mx-auto">
+                  <tbody className="ml-2">
+                    <tr className="h-12">
+                      <th className="text-left pl-2">Droga:</th>
+                      <td className="w-24 text-center">{droState}</td>
+                    </tr>
+                    <tr className="h-12">
+                      <th className="text-left pl-2">Dosis:</th>
+                      <td className="w-24 text-center">{value2}</td>
+                    </tr>
+                    <tr className="h-12">
+                      <th className="text-left pl-2">Forma farmacéutica:</th>
+                      <td className="w-24 text-center">{value3}</td>
+                    </tr>
+                    <tr className="h-12">
+                      <th className="text-left pl-2">Cantidad de unidades:</th>
+                      <td className="w-24 text-center">{value5}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </TabPanel>
-            {/* <TabPanel value={tabValue} index={2}>
-              Item Three
-            </TabPanel>
-            <TabPanel value={tabValue} index={3}>
-              Item Four
-            </TabPanel>
-            <TabPanel value={tabValue} index={4}>
-              Item Five
-            </TabPanel>
-            <TabPanel value={tabValue} index={5}>
-              Item Six
-            </TabPanel>
-            <TabPanel value={tabValue} index={6}>
-              Item Seven
-            </TabPanel> */}
           </Box>
         </div>
-        <div className="flex-grow-2 w-80 text-center m-4">
-          <h1 className="text-2xl font-bold">Variabilidad de los precios</h1>
+        <div className="flex-grow-2  w-full sm:w-1/2 text-center m-4 justify-center">
+          <h1 className="text-xl">Variabilidad de los precios</h1>
           <br />
-          <table className="border-gray-300 border-2 border-spacing-1">
-            <tbody className="ml-2">
-              <tr className="h-12">
-                <th className="text-left pl-2">Coeficiente de variabilidad:</th>
-                <td className="w-24 text-center">{cv}%</td>
-              </tr>
-              <tr className="h-12">
-                <th className="text-left pl-2">Promedio:</th>
-                <td className="w-24 text-center">
-                  {new Intl.NumberFormat("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  }).format(prom)}
-                </td>
-              </tr>
-              <tr className="h-12">
-                <th className="text-left pl-2">Mediana:</th>
-                <td className="w-24 text-center">
-                  {new Intl.NumberFormat("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  }).format(mediana)}
-                </td>
-              </tr>
-              <tr className="h-12">
-                <th className="text-left pl-2">1° Cuartilo:</th>
-                <td className="w-24 text-center">
-                  {new Intl.NumberFormat("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  }).format(cuartilo1)}
-                </td>
-              </tr>
-              <tr className="h-12">
-                <th className="text-left pl-2">3° Cuartilo:</th>
-                <td className="w-24 text-center">
-                  {new Intl.NumberFormat("es-AR", {
-                    style: "currency",
-                    currency: "ARS",
-                  }).format(cuartilo3)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="flax flex-row justify-center">
+            <table className="border-gray-300 border-2 border-spacing-1 mx-auto">
+              <tbody className="ml-2">
+                <tr className="h-12">
+                  <th className="text-left pl-2">
+                    Coeficiente de variabilidad:
+                  </th>
+                  <td className="w-24 text-center">{cv}%</td>
+                </tr>
+                <tr className="h-12">
+                  <th className="text-left pl-2">Promedio:</th>
+                  <td className="w-24 text-center">
+                    {new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(prom)}
+                  </td>
+                </tr>
+                <tr className="h-12">
+                  <th className="text-left pl-2">Mediana:</th>
+                  <td className="w-24 text-center">
+                    {new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(mediana)}
+                  </td>
+                </tr>
+                <tr className="h-12">
+                  <th className="text-left pl-2">1° Cuartilo:</th>
+                  <td className="w-24 text-center">
+                    {new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(cuartilo1)}
+                  </td>
+                </tr>
+                <tr className="h-12">
+                  <th className="text-left pl-2">3° Cuartilo:</th>
+                  <td className="w-24 text-center">
+                    {new Intl.NumberFormat("es-AR", {
+                      style: "currency",
+                      currency: "ARS",
+                    }).format(cuartilo3)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       <br />
-      {/* {droState && <h2>{droState ? droState : ""} {value2 ? value2+"mg" : ""} {}</h2>} */}
-      {droState && (
-        <h2 className="text-3xl text-center my-2">
-          {meds2.data.meds.length ? meds2.data.meds[0].droga_combo : ""}{" "}
-          {meds2.data.meds.length ? meds2.data.meds[0].dosis + "mg" : ""}{" "}
-          {meds2.data.meds.length ? meds2.data.meds[0].forma10 : ""}
-        </h2>
-      )}
 
-      <div className="flex flex-col columns-2">
-        <div className="h-500">
-          <TableBasic2 {...meds2} />
-        </div>
-        {/* <div className="h-1000 p-5 m-5"> */}
-        {/* <div  style={{height:'1500px',width:'1500px'}}> */}
-        <div>
-          <ChartCombinado2 {...lasChartOptions} />
-        </div>
-      </div>
+      {droState && (
+        <>
+          <h2 className="text-3xl text-center my-2">
+            {meds3.data.meds.length ? meds3.data.meds[0].droga_combo : ""}{" "}
+            {meds3.data.meds.length ? meds3.data.meds[0].dosis + "mg" : ""}{" "}
+            {meds3.data.meds.length ? meds3.data.meds[0].forma10 : ""}
+            {meds3.data.meds.length ? " x " + meds3.data.meds[0].q : ""}
+          </h2>
+
+          <div className="flex flex-col columns-2">
+            <div>
+              <ChartCombinado2 {...lasChartOptions3} />
+            </div>
+            <div>
+              <TableBasic2 {...meds3} />
+            </div>
+          </div>
+
+          <div className="flex flex-col columns-2">
+            <div>
+              <ChartCombinado2 {...lasChartOptions2} />
+            </div>
+            <div>
+              <TableBasic2 {...meds2} />
+            </div>
+          </div>
+
+        </>
+      )}
     </div>
   );
 }

@@ -5,6 +5,8 @@ export async function GET (req: NextApiRequest, {params}: any, res: NextApiRespo
 
   const elId2 = params.id;
 
+  
+
   function toUpper(elID: any) {
     const idUP = elID.toUpperCase();
     return idUP;

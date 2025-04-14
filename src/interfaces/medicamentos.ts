@@ -48,10 +48,12 @@ export interface MedicamentosComparativo {
   clavelab: number;
   laboratorio:string;
   q: number;
-  dosis: number;
+  //dosis: number;
+  dosis: string;
   ppu: number;
   pvp: number;
-  forma10: number;
+  //forma10: number;
+  forma10: string;
 }
 
 export interface MedicamentosComparativoData {
@@ -73,6 +75,7 @@ export interface MedicamentoComparativoComercialData {
 
 export interface DatosDelComercial {
   droga: string;
-  dosis: number;
+  dosis: string;
   ff: string;
+  unidades: string;
 }

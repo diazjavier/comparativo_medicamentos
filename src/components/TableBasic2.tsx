@@ -70,12 +70,13 @@ function TableBasic2(meds: MedicamentosComparativoData) {
     const table = useMaterialReactTable({
         columns,
         data,
-        enableRowSelection: true,
+        enableRowSelection: false,
         enableColumnOrdering: true,
         enableGlobalFilter: true,
         initialState: {
+            density: "compact",
             pagination: {
-                pageSize: 10,
+                pageSize: 20,
                 pageIndex: 0,
             },
             columnOrder: [

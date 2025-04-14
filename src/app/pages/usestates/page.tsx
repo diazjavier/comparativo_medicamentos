@@ -6,17 +6,17 @@ export default function page() {
   const [numero2, setNumero2] = useState("0");
 
   function handleChange(e: any) {
-    console.log("Botón: ", e.target.id)
+
     setNumero(e.target.id);
   }
   
   function handleChange2(e: any) {
-    console.log("handleChange2: ", e.target.id)
+
     setNumero2("");
   }
   
   function handleChange3(e: any) {
-    console.log(e.target.id)
+
     setNumero("");
   }
 
@@ -25,7 +25,7 @@ export default function page() {
   }, [numero]);
 
   useEffect(() => {
-    console.log("Entró! Número2: ", numero2);
+
 
   }, [numero2]);
 

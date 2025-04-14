@@ -67,22 +67,22 @@ export default function Comerciales() {
     const stdDeviation2: math.MathNumericType[] = math.std(ppus);
     //const cuartilos: math.MathNumericType[] = math.quantileSeq(ppus, [1/25, 1/75]);
     //console.log("Cuartilos: ", cuartilos);
-    console.log(
-      "promedio: ",
-      promedio,
-      "Varianza: ",
-      varianza,
-      "DesvEstandar: ",
-      stdDeviation,
-      "Mediana: ",
-      median,
-      "stDeviation2: ",
-      stdDeviation2, 
-      "1° Cuartilo: ",
-      cuartilos[0],
-      "3° Cuartilo: ",
-      cuartilos[1]
-    );
+    // console.log(
+    //   "promedio: ",
+    //   promedio,
+    //   "Varianza: ",
+    //   varianza,
+    //   "DesvEstandar: ",
+    //   stdDeviation,
+    //   "Mediana: ",
+    //   median,
+    //   "stDeviation2: ",
+    //   stdDeviation2, 
+    //   "1° Cuartilo: ",
+    //   cuartilos[0],
+    //   "3° Cuartilo: ",
+    //   cuartilos[1]
+    // );
     setCv(coefVariacion);
     setProm(promedio);
     setMediana(median);

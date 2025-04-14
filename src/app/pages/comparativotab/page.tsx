@@ -200,7 +200,7 @@ export default function ComercialesTab() {
   };
 
   const fetchFormasFarmaceuticas = async () => {
-    console.log("Entró a fetchFormasFarmacéuticas con Droga: ", droState, " Dosis: ", value2)
+
     const request = new Request(
       `http://localhost:3000/api/comparativo_formas_farmaceuticas`,
       {
@@ -305,7 +305,7 @@ export default function ComercialesTab() {
   }, [value2]);
 
   useEffect(() => {
- console.log("Entró al useEffect con un value3 de: ", value3, "Droga: ", droState)
+
     if (value3 !== null && value3 !== undefined && value3 !== "") {
       fetchComerciales();
     }

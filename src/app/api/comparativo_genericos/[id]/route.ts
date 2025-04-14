@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { conn } from "@/utils/dbConnection";
 
 export async function GET (req: NextApiRequest, {params}: any, res: NextApiResponse) {
-  console.log("Entró a API comparativo_genericos")
 
   const elId = params.id;
 
