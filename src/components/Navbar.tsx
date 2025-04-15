@@ -21,7 +21,7 @@ export const Navbar = () => {
    ];
 
   return (
-    <div className="w-full shadow-lg hover:shadow-xl bg-colores-fondoNavBar dark:bg-trueGray-950">
+    <div className="w-full shadow-lg hover:shadow-xl bg-colores-fondoNavBar dark:bg-colores-fondoNavBarDark">
       <nav className="container relative flex flex-wrap items-center justify-between p-2 mx-auto lg:justify-between xl:px-1">
         {/* Logo  */}
         <Link href="/pages">

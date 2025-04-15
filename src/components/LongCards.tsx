@@ -11,7 +11,7 @@ interface LongCardsProps {
 
 export default function LongCards(props: Readonly<LongCardsProps>) {
   return (
-    <div className="max-w-full gap-x-2 mb-4 max-h-full px-4 w-full xl:px-6 rounded-3xl bg-white border border-gray-100 shadow-2xl shadow-gray-600/10 dark:shadow-none dark:border-gray-700 dark:bg-gray-800 bg-opacity-50">
+    <div className="max-w-full gap-x-2 mb-4 max-h-full px-4 w-full xl:px-6 rounded-3xl bg-white border border-gray-100 shadow-2xl shadow-gray-600/10 dark:shadow-none dark:border-gray-700 dark:bg-colores-cardDark bg-opacity-50">
       <div className="group p-6 max-h-full sm:p-8">
         <a href={props.data.destination}>
           <div className="relative overflow-hidden rounded-xl">

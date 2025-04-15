@@ -15,7 +15,6 @@ export default function ParticularService() {
     <Container>
       <div id="particularSerivices" className="section relative pb-8">
         <div className="container xl:max-w-6xl mx-auto px-4">
-          {/* <SimpleSectionCenter data={servicios.data[paramId].content?.header} /> */}
           <SimpleSectionCenter data={servicioHeaderData} />
           <div className="flex flex-wrap flex-row -mx-4 justify-between">
             {sobreEsteSitio.content?.data.map((card: any, index: number) => (
@@ -32,7 +31,6 @@ export default function ParticularService() {
               </div>
             ))}
           </div>{" "}
-          {/* {<BottomButton data={servicios.data[paramId].content?.bottomLink}/>} */}
           {<BottomButton data={botonData}/>}
         </div>
       </div>{" "}

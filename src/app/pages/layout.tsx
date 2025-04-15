@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class">
           <Navbar />
-          <div>{children}</div>
+          <div className="bg-colores-fondoComun dark:bg-colores-fondoComunDark">{children}</div>
           <Footer />
           {/* <PopupWidget /> */}
         </ThemeProvider>

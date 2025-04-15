@@ -15,19 +15,19 @@ interface SectionProps {
 
 export default function SimpleSectionCenter(props: Readonly<SectionProps>) {
   return (
-    <Container className={`flex w-full flex-col mt-4 items-center justify-center text-center`}>
+    <Container className={`flex w-full flex-col items-center justify-center text-center`}>
       {props.data.reference && (
         <div id={props.data.reference} className="mb-1"></div>
       )}
 
       {props.data.preTitle && (
-        <div className="text-center text-sm font-bold tracking-wider text-colores-titulo uppercase">
+        <div className="text-center text-sm pt-4 font-bold tracking-wider text-colores-titulo uppercase">
           {props.data.preTitle}
         </div>
       )}
 
       {props.data.title && (
-        <h2 className="text-center mt-20 text-3xl font-bold leading-snug tracking-tight text-colores-tituloPrincipal lg:leading-tight lg:text-4xl dark:text-white">
+        <h2 className="text-center mt-10 text-3xl font-bold leading-snug tracking-tight text-colores-tituloPrincipal lg:leading-tight lg:text-4xl dark:text-white">
           {props.data.title}
         </h2>
       )}

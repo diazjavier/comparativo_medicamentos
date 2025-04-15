@@ -55,6 +55,8 @@ export function ChartCombinado2(opts: {}) {
 
 export function getChartOptions2(meds: MedicamentosComparativoData, comercialSelected: string) {
   //    const [chartOptions, setChartOptios] = useState({});
+  const colorBar: string = "#ea886a";
+  const colorBarSelected: string = "#c0392b";
 
   const catCom: string[] = meds.data.meds.map((med) => {return med.nombrecomercial + " " + med.formapresentacion});
 
@@ -128,7 +130,7 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
       data: catCom,
     },
     yAxis: {
-      type: "value",
+      type: "value",      
     },
     label: {
       show: true,
@@ -140,18 +142,18 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
     },
     series: [
       {
-        name: "Precio por unidad en pesos argentinos",
+        name: "Precio por unidad (comprimido, cápsula, ampolla, etc.) en pesos argentinos",
         data: valCom,
         type: "bar",
+        color: colorBar,
         itemStyle:{
           color: function (params: any) {
-
             if(comercialSelected && comercialSelected !== '' && comercialSelected === params.name && catCom.length > 1){
               //return "red";
-              return "#c0392b"
+              return colorBarSelected
             } else {
               //return "blue";
-              return "#ea886a"
+              return colorBar
             }
 
           }
@@ -164,6 +166,8 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
 };
 
 export function getChartOptions3(meds: MedicamentosComparativoData, comercialSelected: string) {
+  const colorBar: string = "#ea886a";
+  const colorBarSelected: string = "#c0392b";
 
   const catCom: string[] = meds.data.meds.map((med) => {return med.nombrecomercial + " " + med.formapresentacion});
 
@@ -246,16 +250,17 @@ export function getChartOptions3(meds: MedicamentosComparativoData, comercialSel
     },
     series: [
       {
-        name: "Precio por producto en pesos argentinos",
+        name: "Precio por empaque de producto comercial en pesos argentinos",
         data: valCom,
         type: "bar",
+        color: colorBar,
         itemStyle:{
           color: function (params: any) {
 
             if(comercialSelected && comercialSelected !== '' && comercialSelected === params.name && catCom.length > 1){
-              return "#c0392b";
+              return colorBarSelected;
             } else {
-              return "#ea886a";
+              return colorBar;
             }
             
           }

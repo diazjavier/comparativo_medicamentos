@@ -174,7 +174,6 @@ export default function ComercialesTab() {
 
   };
 
-
   const fetchComercialesTodos = async () => {
     const res4 = await fetch(
       `http://localhost:3000/api/comparativo_comerciales_todos`
@@ -379,8 +378,6 @@ export default function ComercialesTab() {
       const data: DatosDelComercial = datosDelCom[0];
       setDatosQuery(data);
 
-
-
     }
   }, [value4]);
 
@@ -403,8 +400,6 @@ export default function ComercialesTab() {
     }
   }, [meds3]);
 
-
-
   //Esto es para seleccionar la opción en el combo de dosis cuando hay un solo valor
   useEffect(() => {
     if (options2.length === 1) {
@@ -419,6 +414,7 @@ export default function ComercialesTab() {
     }
   }, [options3]);
 
+  //Esto es para seleccionar la opción en el combo de unidades cuando hay un solo valor
   useEffect(() =>{
     if(options5.length === 1) {
       setValue5(options5[0]);
@@ -489,15 +485,20 @@ export default function ComercialesTab() {
                 borderColor: "divider",
               }}
               centered
-              indicatorColor="secondary"
+              //indicatorColor="secondary"
+              TabIndicatorProps={{
+                style: {
+                  backgroundColor: "#1c1818"
+                }
+              }}
               textColor="inherit"
             >
-              <Tab className="text-lg font-bold" label="Por droga" {...a11yProps(0)} />
-              <Tab className="text-lg font-bold" label="Por comercial" {...a11yProps(1)} />
+              <Tab className="text-lg font-bold text-gray-600 dark:text-gray-300" label="Por droga" {...a11yProps(0)} />
+              <Tab className="text-lg font-bold text-gray-600 dark:text-gray-300" label="Por comercial" {...a11yProps(1)} />
 
             </Tabs>
             <TabPanel value={tabValue} index={0}>
-              <div className="m-4 p-2 ">
+              <div className="m-4 p-2 text-gray-600 dark:text-gray-300">
                 <Autocomplete
                   id="drogas"
                   sx={{
@@ -506,12 +507,12 @@ export default function ComercialesTab() {
                   value={droState}
                   options={options}
                   renderInput={(params) => (
-                    <TextField {...params} label="Genérico" />
-                  )}
+                    <TextField {...params} label="Genérico"/>
+                  )}                  
                   onChange={handleChange}
                 />
               </div>
-              <div className="m-4 p-2 ">
+              <div className="m-4 p-2 text-gray-600 dark:text-gray-300">
                 <Autocomplete
                   id="dosis"
                   sx={{ width: "100%" }}
