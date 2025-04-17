@@ -8,9 +8,6 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     const dosis = body.value2;
     const ff = body.value3
 
-    console.log("Entró a api/comparativo_unidades con: Dosis: ", dosis, " Forma Farmaceutica: ", ff);      
-
-
     const resp = await conn.query(getUnidades(droga, dosis, ff));
     return new Response(JSON.stringify(resp.rows));
 }

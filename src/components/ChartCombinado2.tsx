@@ -12,6 +12,36 @@ function getLab2(meds: MedicamentosComparativoData, name: string, value: number)
   };
 };
 
+function getLab2FromName(meds: MedicamentosComparativoData, name: string) {
+  const medLab = meds.data.meds.find(med => name === (med.nombrecomercial + " " + med.formapresentacion));
+  if (medLab) {
+    return medLab.laboratorio
+  } else {
+    return ""
+  };
+};
+
+function getDate2(meds: MedicamentosComparativoData, name: string, value: number) {
+  
+  const medDate = meds.data.meds.find(med => med.ppu === value && name === (med.nombrecomercial + " " + med.formapresentacion));
+  if (medDate) {
+    return medDate.fechavigencia
+  } else {
+    return ""
+  };
+};
+
+function getDate3(meds: MedicamentosComparativoData, name: string, value: number) {
+  
+  const medDate = meds.data.meds.find(med => med.pvp === value && name === (med.nombrecomercial + " " + med.formapresentacion));
+  if (medDate) {
+    return medDate.fechavigencia
+  } else {
+    return ""
+  };
+};
+
+
 function getLab3(meds: MedicamentosComparativoData, name: string, value: number) {
   const medLab = meds.data.meds.find(med => med.pvp === value && name === (med.nombrecomercial + " " + med.formapresentacion));
   if (medLab) {
@@ -55,6 +85,10 @@ export function ChartCombinado2(opts: {}) {
 
 export function getChartOptions2(meds: MedicamentosComparativoData, comercialSelected: string) {
   //    const [chartOptions, setChartOptios] = useState({});
+
+  // Primero ordeno el array por el ppu
+  meds.data.meds.sort((a,b) => a.ppu - b.ppu);
+
   const colorBar: string = "#ea886a";
   const colorBarSelected: string = "#c0392b";
 
@@ -70,7 +104,7 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
 
   const lasChartOptions2: {} = {
     title: {
-        text: "Comparativo de precios por unidad",
+        text: "Comparativo de precios por unidad de todas las presentaciones",
         subtext: generic,
         padding: 10,
         margin: 10,
@@ -107,7 +141,12 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
       //}
       formatter: function (params: any) {
         // return `$${params.value}`;
-        return `${params.marker}${params.name} <br/><span style="float: left; margin-left: 15px"> Laboratorio: ${getLab2(meds, params.name, params.value)}<span/><br/><span style="float: left">Precio por empaque: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(getPVP(meds, params.name, params.value))}.-</b></span><br/><span style="float: left">Precio por unidad: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(params.value)}.-</b></span>`;
+        return `
+        ${params.marker}${params.name} 
+        <br/><span style="float: left; margin-left: 15px">Laboratorio: ${getLab2(meds, params.name, params.value)}<span/>
+        <br/><span style="float: left">Precio por empaque: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(getPVP(meds, params.name, params.value))}.-</b></span>
+        <br/><span style="float: left">Precio por unidad: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(params.value)}.-</b></span>
+        <br/><span style="float: left;">Fecha de actualización: ${getDate2(meds, params.name, params.value)}<span/>`;
       },
 
     },
@@ -125,6 +164,10 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
         // rotate: 45,
         rotate: 90,
         fontSize: 8,
+        formatter: function (params: any) {
+          const elLab: string = getLab2FromName (meds, params);
+          return elLab;
+        },
       },
       // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
       data: catCom,
@@ -133,7 +176,7 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
       type: "value",      
     },
     label: {
-      show: true,
+      show: false,
       position: "top",
       fontSize: 8,
       formatter: function (params: { value: number}) {
@@ -166,6 +209,10 @@ export function getChartOptions2(meds: MedicamentosComparativoData, comercialSel
 };
 
 export function getChartOptions3(meds: MedicamentosComparativoData, comercialSelected: string) {
+
+  // Primero ordeno el array por el pvp
+  meds.data.meds.sort((a,b) => a.pvp - b.pvp);
+
   const colorBar: string = "#ea886a";
   const colorBarSelected: string = "#c0392b";
 
@@ -217,7 +264,12 @@ export function getChartOptions3(meds: MedicamentosComparativoData, comercialSel
       //   type: 'line',
       //}
       formatter: function (params: any) {
-        return `${params.marker}${params.name} <br/><span style="float: left; margin-left: 15px"> Laboratorio: ${getLab3(meds, params.name, params.value)}<span/><br/><span style="float: left">Precio por empaque: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(params.value)}.-</b></span><br/><span style="float: left">Precio por unidad: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(getPPU(meds, params.name, params.value))}.-</b></span>`;
+        return `
+        ${params.marker}${params.name} 
+        <br/><span style="float: left; margin-left: 15px"> Laboratorio: ${getLab3(meds, params.name, params.value)}<span/>
+        <br/><span style="float: left">Precio por empaque: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(params.value)}.-</b></span>
+        <br/><span style="float: left">Precio por unidad: <b>${new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS'}).format(getPPU(meds, params.name, params.value))}.-</b></span>
+        <br/><span style="float: left;">Fecha de actualización: ${getDate3(meds, params.name, params.value)}<span/>`;        
       },
 
     },

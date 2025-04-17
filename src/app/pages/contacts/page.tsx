@@ -62,28 +62,13 @@ async function onSubmitForm(event: any) {
                 <h2 className="text-2xl font-semibold dark:text-white">
                   Canales de contacto
                 </h2>
-                {/* <p className="max-w-sm mt-5">
-          Completá el formulario de contacto y envianos tu consulta, envianos un email o llamanos.
-          Estamos aquí para ayudarte a conocer más sobre nuestra labor y cómo colaboramos para mejorar la salud pública.
-          </p> */}
-
                 <div className="mt-5">
-                  {/* <div className="flex items-center mt-2 space-x-2 text-dark-600 dark:text-gray-400">
-                    <MapPinIcon className="w-4 h-4" />
-                    <span>Azcuénaga 2367 CABA</span>
-                  </div> */}
-
                   <div className="flex items-center mt-2 space-x-2 text-dark-600 dark:text-gray-400">
                     <EnvelopeIcon className="w-4 h-4" />
                     <a href={`mailto:consultas@preciomedicamentos.com.ar`}>
                       consultas@preciomedicamentos.com.ar
                     </a>
                   </div>
-
-                  {/* <div className="flex items-center mt-2 space-x-2 text-dark-600 dark:text-gray-400">
-                    <PhoneIcon className="w-4 h-4" />
-                    <a href={`tel:1150108094`}>+54-911-34569789</a>
-                  </div> */}
                 </div>
               </div>
               <div className="m-10 w-full sm:w-1/4">
@@ -122,12 +107,12 @@ async function onSubmitForm(event: any) {
                     <textarea
                       name="message"
                       placeholder="Tu consulta"
-                      className="w-full px-4 py-3 border-2 placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-200 dark:bg-gray-900   rounded-md outline-none  h-36 focus:ring-4"
+                      className="w-full px-4 py-3 border-2 placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-200 dark:bg-gray-900 rounded-md outline-none h-36 focus:ring-4"
                     />
                   </div>
 
                   <button type="submit"
-                    className="w-full py-4 font-semibold text-white bg-colores-boton2 dark:bg-colores-boton2Dark transition-colors rounded-md hover:bg-colores-boton2Hover px-7"
+                    className="w-full py-4 font-semibold transition-colors rounded-md text-white bg-colores-boton2 dark:bg-colores-boton2Dark hover:bg-colores-boton2Hover px-7"
                   >
                     Enviar
                   </button>

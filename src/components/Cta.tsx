@@ -18,7 +18,7 @@ export const Cta = () => {
             href="/pages/contacts"
             // target="_blank"
             rel="noopener"
-            className="inline-block py-3 mx-auto text-lg font-medium text-center text-colores-titulo bg-white rounded-md px-7 lg:px-10 lg:py-5 "
+            className="inline-block py-3 mx-auto text-lg font-medium text-center text-colores-titulo dark:text-colores-textDark bg-white dark:bg-colores-boton2Dark rounded-md px-7 lg:px-10 lg:py-5 "
           >
             Contacto
           </a>

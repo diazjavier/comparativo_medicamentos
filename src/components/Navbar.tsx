@@ -80,21 +80,21 @@ export const Navbar = () => {
                 <DisclosurePanel className="flex flex-wrap w-full my-5 lg:hidden">
                   <>
                     {navigation.map((item, index) => (
-                      <Link key={index} href={item[1]} onClick={() => {close()}} className="w-full px-4 py-2 -ml-4 text-colores-fuenteNavBar rounded-md dark:text-gray-300 hover:text-colores-fuenteNavBarHover focus:bg-colores-fondoNavBarFocus dark:focus:bg-gray-800 focus:outline-none">
+                      <Link key={index} href={item[1]} onClick={() => {close()}} className="w-full px-4 py-2 -ml-4 text-colores-fuenteNavBar rounded-md dark:bg-colores-boton2Dark dark:text-gray-300 hover:text-colores-fuenteNavBarHover focus:bg-colores-fondoNavBarFocus dark:focus:bg-gray-800 focus:outline-none">
                           {item[0]}
                       </Link>
                     ))}
-                    <Modal className="w-full px-6 py-2 mt-3 text-center text-white bg-colores-boton hover:bg-colores-botonHover rounded-md lg:ml-5"/>
+                    {/* <Modal className="w-full px-6 py-2 mt-3 text-center text-white bg-colores-boton hover:bg-colores-botonHover rounded-md lg:ml-5"/>
                     <Link href="@/pages/contacts" onClick={() => {close()}} className="w-full px-6 py-2 mt-3 text-center text-white bg-colores-boton hover:bg-colores-botonHover rounded-md lg:ml-5">         
                         Contacto
-                    </Link>
+                    </Link> */}
 
                   </>
                 </DisclosurePanel>
             </>
           )}
         </Disclosure>
-        
+
         {/* menu  */}
         <div className="hidden text-center lg:flex lg:items-center">
         

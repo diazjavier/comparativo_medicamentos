@@ -36,6 +36,7 @@ const config: Config = {
         tituloGrande: "#881337",
         titulo: "#5A595A",
         tituloPrincipal: "#111827",
+        textDark: "#FFFFFF",
         fondoComun: "#FFFFFF",
         fondoComunDark: "#2f2a2a",
         card:"",

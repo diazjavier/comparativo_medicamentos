@@ -34,6 +34,7 @@ import {
 import { TabPanelProps } from "@/interfaces/tabs";
 
 import { comparadorDePrecios } from "@/components/data";
+import { log } from "console";
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -108,6 +109,11 @@ export default function ComercialesTab() {
     unidades: "",
   });
 
+  const[showChart2, setShowChart2] = useState(false);
+  const[showChart3, setShowChart3] = useState(false);
+  const[showGrid2, setShowGrid2] = useState(false);
+  const[showGrid3, setShowGrid3] = useState(false);
+  
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -115,6 +121,8 @@ export default function ComercialesTab() {
   const calculoCv = () => {
     // No se por qué tengo que transformar el número en string y luego volver a transformarlo en número para que lo tome
     const n: number = meds2.data.meds.length;
+
+    if(n){
     const ppus: number[] = meds2.data.meds.map((med) => {
       return parseFloat(med.ppu.toString());
     });
@@ -145,6 +153,13 @@ export default function ComercialesTab() {
     setMediana(median);
     setCuartilo1(cuartilos[0]);
     setCuartilo3(cuartilos[1]);
+  } else {
+    setCv(0);
+    setProm(0);
+    setMediana(0);
+    setCuartilo1(0);
+    setCuartilo3(0);
+  }
   };
 
   const fetchComparativoComerciales = async () => {
@@ -171,7 +186,6 @@ export default function ComercialesTab() {
     const res = await fetch(request);
     const comecs = await res.json();
     setMeds2({ data: { meds: comecs } });
-
   };
 
   const fetchComercialesTodos = async () => {
@@ -308,9 +322,32 @@ export default function ComercialesTab() {
   }, []);
 
   useEffect(() => {
+    setMeds2({
+      data: { meds: [] },
+    });
+    
+    setMeds3({
+      data: { meds: [] },
+    });
+
+    // const vacuum: {} = {};
+    //Al cambiar la selección de la droga primero limpio los gráficos
+    // setLasChartOptions2(vacuum);
+    // setLasChartOptions3(vacuum);
+
     if (droState !== null && droState !== undefined && droState !== "") {
       fetchDosis();
     }
+
+
+    // const data: DatosDelComercial = {
+    //   droga: droState,
+    //   dosis: "",
+    //   ff: "",
+    //   unidades: "",
+    // };
+    // setDatosQuery(data);
+
   }, [droState]);
 
   useEffect(() => {
@@ -382,21 +419,43 @@ export default function ComercialesTab() {
   }, [value4]);
 
   useEffect(() => {
+
     if (meds2.data.meds.length) {
       calculoCv();
-
       const opts: {} = getChartOptions2(meds2, value4.nombre);
-      setLasChartOptions2(opts);
-  
+      setLasChartOptions2(opts);  
+      setShowChart2(true);
+      setShowGrid2(true);
+    } else {
+      setCv(0);
+      setProm(0);
+      setMediana(0);
+      setCuartilo1(0);
+      setCuartilo3(0);
+      setShowChart2(false);
+      setShowGrid2(false);
+      setShowChart3(false);
+      setShowGrid3(false);
     }
+
   }, [meds2]);
 
   useEffect(() => {
     if (meds3.data.meds.length) {
-
       const opts: {} = getChartOptions3(meds3, value4.nombre);
       setLasChartOptions3(opts);
-  
+      setShowChart3(true);
+      setShowGrid3(true);
+    } else {
+      setCv(0);
+      setProm(0);
+      setMediana(0);
+      setCuartilo1(0);
+      setCuartilo3(0);
+      setShowChart2(false);
+      setShowGrid2(false);
+      setShowChart3(false);
+      setShowGrid3(false);
     }
   }, [meds3]);
 
@@ -494,7 +553,7 @@ export default function ComercialesTab() {
               textColor="inherit"
             >
               <Tab className="text-lg font-bold text-gray-600 dark:text-gray-300" label="Por droga" {...a11yProps(0)} />
-              <Tab className="text-lg font-bold text-gray-600 dark:text-gray-300" label="Por comercial" {...a11yProps(1)} />
+              <Tab className="text-lg font-bold text-gray-600 dark:text-gray-300" label="Por marca" {...a11yProps(1)} />
 
             </Tabs>
             <TabPanel value={tabValue} index={0}>
@@ -569,20 +628,20 @@ export default function ComercialesTab() {
                 <table className="mx-auto">
                   <tbody className="ml-2">
                     <tr className="h-12">
-                      <th className="text-left pl-2">Droga:</th>
-                      <td className="w-24 text-center">{droState}</td>
+                      <th className="text-left pl-2 dark:text-gray-300">Droga:</th>
+                      <td className="w-24 text-center dark:text-colores-textDark">{droState}</td>
                     </tr>
                     <tr className="h-12">
-                      <th className="text-left pl-2">Dosis:</th>
-                      <td className="w-24 text-center">{value2}</td>
+                      <th className="text-left pl-2 dark:text-gray-300">Dosis:</th>
+                      <td className="w-24 text-center dark:text-colores-textDark">{value2}</td>
                     </tr>
                     <tr className="h-12">
-                      <th className="text-left pl-2">Forma farmacéutica:</th>
-                      <td className="w-24 text-center">{value3}</td>
+                      <th className="text-left pl-2 dark:text-gray-300">Forma farmacéutica:</th>
+                      <td className="w-24 text-center dark:text-colores-textDark">{value3}</td>
                     </tr>
                     <tr className="h-12">
-                      <th className="text-left pl-2">Cantidad de unidades:</th>
-                      <td className="w-24 text-center">{value5}</td>
+                      <th className="text-left pl-2 dark:text-gray-300">Cantidad de unidades:</th>
+                      <td className="w-24 text-center dark:text-colores-textDark">{value5}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -591,29 +650,29 @@ export default function ComercialesTab() {
           </Box>
         </div>
         <div className="flex-grow-2  w-full sm:w-1/2 text-center m-4 justify-center">
-          <h1 className="text-xl">Variabilidad de los precios</h1>
+          <h1 className="text-lg font-bold text-gray-600 dark:text-gray-300">Variabilidad de los precios</h1>
           <br />
           <div className="flax flex-row justify-center">
-            <table className="border-gray-300 border-2 border-spacing-1 mx-auto">
+            <table className="border-gray-300 border-2 border-spacing-1 mx-auto mt-7">
               <tbody className="ml-2">
                 <tr className="h-12">
-                  <th className="text-left pl-2">
+                  <th className="text-left pl-2 dark:text-gray-300">
                     Coeficiente de variabilidad:
                   </th>
-                  <td className="w-24 text-center">{cv}%</td>
+                  <td className="w-24 text-center dark:text-colores-textDark">{cv}%</td> 
                 </tr>
-                <tr className="h-12">
-                  <th className="text-left pl-2">Promedio:</th>
-                  <td className="w-24 text-center">
+                {/* <tr className="h-12">
+                  <th className="text-left pl-2 dark:text-gray-300">Promedio:</th>
+                  <td className="w-24 text-center dark:text-colores-textDark">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: "ARS",
                     }).format(prom)}
                   </td>
-                </tr>
+                </tr> */}
                 <tr className="h-12">
-                  <th className="text-left pl-2">Mediana:</th>
-                  <td className="w-24 text-center">
+                  <th className="text-left pl-2 dark:text-gray-300">Mediana:</th>
+                  <td className="w-24 text-center dark:text-colores-textDark">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: "ARS",
@@ -621,8 +680,8 @@ export default function ComercialesTab() {
                   </td>
                 </tr>
                 <tr className="h-12">
-                  <th className="text-left pl-2">1° Cuartilo:</th>
-                  <td className="w-24 text-center">
+                  <th className="text-left pl-2 dark:text-gray-300">1° Cuartilo:</th>
+                  <td className="w-24 text-center dark:text-colores-textDark">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: "ARS",
@@ -630,8 +689,8 @@ export default function ComercialesTab() {
                   </td>
                 </tr>
                 <tr className="h-12">
-                  <th className="text-left pl-2">3° Cuartilo:</th>
-                  <td className="w-24 text-center">
+                  <th className="text-left pl-2 dark:text-gray-300">3° Cuartilo:</th>
+                  <td className="w-24 text-center dark:text-colores-textDark">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: "ARS",
@@ -648,7 +707,7 @@ export default function ComercialesTab() {
 
       {droState && (
         <>
-          <h2 className="text-3xl text-center my-2">
+          <h2 className="text-3xl text-center my-2 dark:text-gray-300">
             {meds3.data.meds.length ? meds3.data.meds[0].droga_combo : ""}{" "}
             {meds3.data.meds.length ? meds3.data.meds[0].dosis + "mg" : ""}{" "}
             {meds3.data.meds.length ? meds3.data.meds[0].forma10 : ""}
@@ -657,19 +716,19 @@ export default function ComercialesTab() {
 
           <div className="flex flex-col columns-2">
             <div>
-              <ChartCombinado2 {...lasChartOptions3} />
+              {showChart2 && <ChartCombinado2 {...lasChartOptions3} />}
             </div>
             <div>
-              <TableBasic2 {...meds3} />
+              {showGrid2 && <TableBasic2 {...meds3} />}
             </div>
           </div>
 
           <div className="flex flex-col columns-2">
             <div>
-              <ChartCombinado2 {...lasChartOptions2} />
+              {showChart3 && <ChartCombinado2 {...lasChartOptions2} />}
             </div>
             <div>
-              <TableBasic2 {...meds2} />
+              {showGrid3 && <TableBasic2 {...meds2} />}
             </div>
           </div>
 

@@ -91,7 +91,9 @@ function TableBasic2(meds: MedicamentosComparativoData) {
         },
     });
 
-    return <MaterialReactTable table={table}/>;
+    return (
+            <MaterialReactTable table={table}/>
+        );
 }
 
 export default TableBasic2;

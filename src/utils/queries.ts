@@ -38,6 +38,7 @@ export function getComparativoComercialesDatos (codigo: string) {
             k.dosis,
             k.forma10 as ff,
             ab.unidades
+            --to_char(k.fechavigencia, 'DD/MM/YYYY') as fechavigencia
             from alfabeta ab inner join kairos k on ab.troquel = k.troquel
             where k.dosis is not null
             and k.ppu is not null
@@ -57,15 +58,16 @@ export function getComparativoComercialesChart (droga: string, dosis: string, ff
                 k.dosis,
                 k.ppu,
                 k.pvp,
-                k.forma10
+                k.forma10,
+                to_char(k.fechavigencia, 'DD/MM/YYYY') as fechavigencia
             from alfabeta ab inner join kairos k on ab.troquel = k.troquel
             where k.dosis is not null
             and k.ppu is not null
-            and upper(k.droga_combo) = '${droga}'
+            and upper(k.droga_combo) = '${toUpper(droga)}'
             and k.dosis = '${dosis}' 
             and k.forma10 = '${ff}'
             and ab.unidades = ${unidades}
-            order by ab.unidades;`;
+            order by k.pvp asc;`;
 };
 
 export function getCompartivoGenericosTodos () {
@@ -141,11 +143,12 @@ export function getComparativoUnidadesChart (droga: string, dosis: string, ff: s
                 k.dosis,
                 k.ppu,
                 k.pvp,
-                k.forma10
+                k.forma10,
+                to_char(k.fechavigencia, 'DD/MM/YYYY') as fechavigencia
             from alfabeta ab inner join kairos k on ab.troquel = k.troquel
             where k.dosis is not null
             and k.ppu is not null
-            and upper(k.droga_combo) = '${droga}'
+            and upper(k.droga_combo) = '${toUpper(droga)}'
             and k.dosis = '${dosis}' 
             and k.forma10 = '${ff}'
             order by ab.unidades;`;

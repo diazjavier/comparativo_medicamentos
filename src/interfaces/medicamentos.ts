@@ -54,6 +54,7 @@ export interface MedicamentosComparativo {
   pvp: number;
   //forma10: number;
   forma10: string;
+  fechavigencia: string;
 }
 
 export interface MedicamentosComparativoData {
