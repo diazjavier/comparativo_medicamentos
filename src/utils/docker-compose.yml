@@ -1,0 +1,19 @@
+version: '3.9'
+
+services: 
+	BDDev:
+		image: postgres:latest
+		restart: always
+		container_name: contenedorDev
+		hostname: hostDev
+		environment: 
+			POSTGRES_DB: Productos
+			POSTGRES_USER: jdiaz
+			POSTGRES_PASSWORD: 123456Aa
+		volumes:
+			- ~/compartida/docker/volumes/DBDev:/var/lib/postgresql/data
+			- ./sql/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+			- ./sql/data.sql:/docker-entrypoint-initdb.d/data.sql
+		ports:
+			- "9091:5432"
+		
