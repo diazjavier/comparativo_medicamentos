@@ -1,18 +1,17 @@
 version: '3.9'
 
-services: 
-	BDProd:
-		image: postgres:latest
-		restart: always
-		container_name: postgresComparativo
-		hostname: localhost
-		environment: 
-			POSTGRES_DB: medicamentos
-			POSTGRES_USER: jdiaz
-			POSTGRES_PASSWORD: 123456Aa
-		volumes:
-			- /home/jdiaz/compartida/docker/volumes/DBProd:/var/lib/postgresql/data
-			- ./sql/comparativo_tablas_y_datos.sql:/docker-entrypoint-initdb.d/comparativo_tablas_y_datos.sql
-		ports:
-			- "9091:5432"
-		
+services:
+  BDProd:
+    image: postgres:latest
+    restart: always
+    container_name: postgresComparativo
+    hostname: localhost
+    environment:
+      POSTGRES_DB: medicamentos
+      POSTGRES_USER: jdiaz
+      POSTGRES_PASSWORD: 123456Aa
+    volumes:
+    - /home/jdiaz/compartida/docker/volumes/DBProd:/var/lib/postgresql/data
+    - ./sql/comparativo_tablas_y_datos.sql:/docker-entrypoint-initdb.d/comparativo_tablas_y_datos.sql
+    ports:
+    - "9091:5432"
