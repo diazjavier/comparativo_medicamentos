@@ -12,10 +12,7 @@ services:
 			POSTGRES_PASSWORD: 123456Aa
 		volumes:
 			- /home/jdiaz/compartida/docker/volumes/DBProd:/var/lib/postgresql/data
-			- ./sql/tabla_alfabeta.sql:/docker-entrypoint-initdb.d/tabla_alfabeta.sql
-			- ./sql/tabla_kairos.sql:/docker-entrypoint-initdb.d/tabla_kairos.sql
-			- ./sql/datos_alfabeta.sql:/docker-entrypoint-initdb.d/datos_alfabeta.sql
-			- ./sql/datos_kairos.sql:/docker-entrypoint-initdb.d/datos_kairos.sql
+			- ./sql/comparativo_tablas_y_datos.sql:/docker-entrypoint-initdb.d/comparativo_tablas_y_datos.sql
 		ports:
 			- "9091:5432"
 		
