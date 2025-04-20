@@ -1,19 +1,21 @@
 version: '3.9'
 
 services: 
-	BDDev:
+	BDProd:
 		image: postgres:latest
 		restart: always
-		container_name: contenedorDev
-		hostname: hostDev
+		container_name: postgresComparativo
+		hostname: localhost
 		environment: 
-			POSTGRES_DB: Productos
+			POSTGRES_DB: medicamentos
 			POSTGRES_USER: jdiaz
 			POSTGRES_PASSWORD: 123456Aa
 		volumes:
-			- ~/compartida/docker/volumes/DBDev:/var/lib/postgresql/data
-			- ./sql/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
-			- ./sql/data.sql:/docker-entrypoint-initdb.d/data.sql
+			- /home/jdiaz/compartida/docker/volumes/DBProd:/var/lib/postgresql/data
+			- ./sql/tabla_alfabeta.sql:/docker-entrypoint-initdb.d/tabla_alfabeta.sql
+			- ./sql/tabla_kairos.sql:/docker-entrypoint-initdb.d/tabla_kairos.sql
+			- ./sql/datos_alfabeta.sql:/docker-entrypoint-initdb.d/datos_alfabeta.sql
+			- ./sql/datos_kairos.sql:/docker-entrypoint-initdb.d/datos_kairos.sql
 		ports:
 			- "9091:5432"
 		
