@@ -164,7 +164,7 @@ export default function ComercialesTab() {
 
   const fetchComparativoComerciales = async () => {
     const request = new Request(
-      `http://localhost:3000/api/comparativo_comerciales`,
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_comerciales`,
       {
         method: "PUT",
         body: JSON.stringify(datosQuery),
@@ -177,7 +177,7 @@ export default function ComercialesTab() {
 
   const fetchComparativoUnidades = async () => {
     const request = new Request(
-      `http://localhost:3000/api/comparativo_unidades`,
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_unidades`,
       {
         method: "PUT",
         body: JSON.stringify(datosQuery),
@@ -190,7 +190,7 @@ export default function ComercialesTab() {
 
   const fetchComercialesTodos = async () => {
     const res4 = await fetch(
-      `http://localhost:3000/api/comparativo_comerciales_todos`
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_comerciales_todos`
     );
     const comercs = await res4.json();
 
@@ -200,7 +200,7 @@ export default function ComercialesTab() {
 
   const fetchDatosDelComercial = async () => {
     const request = new Request(
-      `http://localhost:3000/api/comparativo_comerciales_datos`,
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_comerciales_datos`,
       {
         method: "PUT",
         body: JSON.stringify(value4),
@@ -214,7 +214,7 @@ export default function ComercialesTab() {
   
   const fetchDosis = async () => {
     const res = await fetch(
-      `http://localhost:3000/api/comparativo_dosis/${droState}`
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_dosis/${droState}`
     );
     const comecs = await res.json();
     const comecsArray: string[] = comecs.map((com: { dosis: string }) => {
@@ -226,7 +226,7 @@ export default function ComercialesTab() {
 
   const fetchFormasFarmaceuticas = async () => {
     const request = new Request(
-      `http://localhost:3000/api/comparativo_formas_farmaceuticas`,
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_formas_farmaceuticas`,
       {
         method: "PUT",
         headers: { "content-type": "application/json" },
@@ -244,7 +244,7 @@ export default function ComercialesTab() {
 
   const fetchUnidades = async () => {
     const request = new Request(
-      `http://localhost:3000/api/unidades`,
+      `http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/unidades`,
       {
         method: "PUT",
         headers: { "content-type": "application/json" },
@@ -262,7 +262,7 @@ export default function ComercialesTab() {
   };  
 
   const fetchGenericos = async () => {
-    const res3 = await fetch(`http://localhost:3000/api/comparativo_genericos`);
+    const res3 = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_PORT}/api/comparativo_genericos`);
     const gens = await res3.json();
 
     const gensArray: string[] = gens.map((gen: { droga_combo: string }) => {
